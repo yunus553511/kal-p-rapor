@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEYMETAL KALIP RAPOR</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo" id="logo" class="logo">
+            </div>
+            <h1 class="title"><span class="gradient-text">BEYMETAL KALIP RAPOR</span></h1>
+        </header>
+        <div class="stats-container">
+            <div class="stat-box blue">
+                <h3>FARKLI PROFİL ADETİ</h3>
+                <p id="farkliProfilAdeti" class="stat-value">0</p>
+            </div>
+            <div class="stat-box green">
+                <h3>ÜRETİME HAZIR AKTİF KALIP ADETİ</h3>
+                <p id="aktifKalipAdeti" class="stat-value">0</p>
+            </div>
+            <div class="stat-box red">
+                <h3>2025 HURDA KALIP ADETİ</h3>
+                <p id="hurdaKalipAdeti" class="stat-value">0</p>
+            </div>
+        </div>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="kalipKodu" placeholder="LÜTFEN RAPORLAMAK İSTEDİĞİNİZ KALIP KODUNU GİRİNİZ">
+                <button id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div id="results" class="results-container"></div>
+        <div id="reportModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <div id="reportContent"></div>
+            </div>
+        </div>
+    </div>
+    <iframe id="proxyFrame" src="proxy.html" style="display:none;"></iframe>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

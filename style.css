@@ -1,0 +1,496 @@
+/* BEYMETAL KALIP RP için temel stil dosyası */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+:root {
+  --primary: #00c6ff;
+  --secondary: #0072ff;
+  --accent: #00ffb0;
+  --dark: #0a0a0a;
+  --blue: #2196f3;
+  --green: #00e676;
+  --red: #ff1744;
+  --gradient: linear-gradient(90deg, #00c6ff 0%, #0072ff 50%, #00ffb0 100%);
+}
+body {
+  background: var(--dark);
+  color: #e0e6ed;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+.background-animation {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 60% 40%, #00c6ff22 0%, transparent 80%), radial-gradient(circle at 30% 80%, #0072ff22 0%, transparent 80%);
+  overflow: hidden;
+}
+.container {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 8px 24px 8px;
+}
+.logo-container {
+  display: flex; justify-content: center; align-items: center; margin-bottom: 12px;
+}
+.logo {
+  width: 120px; height: auto; filter: drop-shadow(0 0 18px #00c6ff88);
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1), filter 0.3s;
+}
+.logo:hover {
+  transform: scale(1.09) rotate(-4deg);
+  filter: drop-shadow(0 0 32px #00ffb0cc);
+}
+.title {
+  font-size: 2.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 28px;
+}
+.gradient-text {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 2px;
+  display: inline-block;
+  animation: fadeInGradient 1.2s cubic-bezier(.4,2,.6,1);
+}
+@keyframes fadeInGradient {from{opacity:0;filter:blur(8px);}to{opacity:1;filter:blur(0);}}
+.stats-container {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 28px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.stat-box {
+  flex: 1 1 120px;
+  min-width: 110px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 14px;
+  padding: 16px 8px 10px 8px;
+  text-align: center;
+  box-shadow: 0 2px 16px #00c6ff11;
+  margin-bottom: 8px;
+  animation: fadeInUp 0.8s cubic-bezier(.4,2,.6,1);
+}
+.stat-box.blue h3 { color: var(--blue); }
+.stat-box.green h3 { color: var(--green); }
+.stat-box.red h3 { color: var(--red); }
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 8px 0 0 0;
+  transition: color 0.4s, filter 0.4s;
+  filter: drop-shadow(0 0 8px #00c6ff33);
+}
+@keyframes fadeInUp {from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.search-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+.search-box {
+  display: flex;
+  background: rgba(30, 41, 59, 0.85);
+  border-radius: 32px;
+  box-shadow: 0 2px 16px #00c6ff11;
+  padding: 4px 8px;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+}
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #e0e6ed;
+  font-size: 1.1rem;
+  padding: 10px 14px;
+  flex: 1;
+}
+.search-box button {
+  background: var(--gradient);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 6px;
+  box-shadow: 0 0 12px #00c6ff33;
+  transition: background 0.3s;
+}
+.search-box button:hover {
+  background: linear-gradient(90deg, #00ffb0 0%, #00c6ff 100%);
+}
+.results-container {
+  margin-top: 18px;
+}
+.modal {
+  display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+}
+.modal-content {
+  background: rgba(255, 255, 255, 0.97); 
+  border-radius: 18px; 
+  padding: 28px 14px; 
+  max-width: 800px; 
+  width: 95vw;
+  margin: 0 auto; 
+  box-shadow: 0 0 32px rgba(0, 198, 255, 0.34); 
+  position: relative;
+}
+.close-button {
+  position: absolute; right: 18px; top: 12px; font-size: 2rem; color: #00c6ff; background: none; border: none; cursor: pointer;}
+.popup-close {
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  font-size: 2.1rem;
+  color: #00c6ff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  transition: color 0.2s, text-shadow 0.2s;
+  z-index: 10;
+  line-height: 1;
+  text-shadow: 0 0 12px #00ffb0cc, 0 0 2px #00c6ff;
+}
+.popup-close:hover {
+  color: #00ffb0;
+  text-shadow: 0 0 20px #00ffb0, 0 0 8px #00c6ff;
+}
+/* Sonuç kutusu ve detaylar için modern animasyonlu tasarım */
+.result-box {
+  background: rgba(16,32,48,0.92);
+  border-radius: 18px;
+  margin: 32px auto 0 auto;
+  padding: 24px 32px 18px 32px;
+  max-width: 500px;
+  color: #fff;
+  box-shadow: 0 6px 32px 0 #0ff6  , 0 1.5px 0 0 #0ff3 inset;
+  border: 1.5px solid #00ff99;
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  transition: opacity 0.7s cubic-bezier(.6,1.5,.6,1), transform 0.7s cubic-bezier(.6,1.5,.6,1);
+}
+.result-box.fade-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.profil-header {
+  font-size: 1.3em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.adet-badge {
+  background: linear-gradient(90deg, #00ff99 40%, #00e6ff 100%);
+  color: #001a26;
+  border-radius: 8px;
+  padding: 2px 14px;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-left: 8px;
+  box-shadow: 0 0 6px #00ff9955;
+}
+.detay-list {
+  margin-top: 10px;
+}
+.detay-item {
+  background: linear-gradient(90deg, #00ff99 0%, #00e6ff 100%);
+  color: #002a2a;
+  font-weight: 700;
+  border-radius: 7px;
+  margin: 7px 0;
+  padding: 7px 18px;
+  font-size: 1.07em;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0 8px #00ff9960;
+  animation: detayFadeIn 0.7s cubic-bezier(.6,1.5,.6,1);
+}
+@keyframes detayFadeIn {
+  from { opacity:0; transform:translateX(-30px) scale(0.96); }
+  to   { opacity:1; transform:translateX(0) scale(1); }
+}
+.no-result {
+  color: #ff4e6a;
+  background: rgba(30,10,40,0.85);
+  border-radius: 12px;
+  padding: 18px 32px;
+  margin-top: 40px;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 10px #ff4e6a55;
+}
+/* --- POPUP RAPOR TASARIMI --- */
+.popup-rapor {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 0 32px rgba(0, 198, 255, 0.47), 0 2px 24px rgba(0, 255, 176, 0.34);
+  padding: 25px 24px 30px 24px;
+  color: #000;
+  min-width: 580px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+}
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid rgba(0, 198, 255, 0.27);
+  padding-bottom: 18px;
+  position: relative;
+}
+.popup-logo {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(0, 198, 255, 0.6));
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 0 12px rgba(0, 255, 176, 0.25);
+  margin-right: 5px;
+}
+.popup-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #0077cc;
+  letter-spacing: 1px;
+  text-shadow: 0 0 4px rgba(0, 255, 176, 0.3), 0 0 1px rgba(0, 198, 255, 0.2);
+  margin-left: 5px;
+}
+.popup-body {
+  margin: 16px 0 8px 0;
+  color: #222;
+}
+.popup-kod, .popup-toplam-adet, .popup-grup, .popup-son-tarih, .popup-figur-tonaj, .popup-yuzdelik-grafik, .popup-tenefer {
+  margin-bottom: 10px;
+  font-size: 1.06em;
+  color: #333;
+}
+.popup-grup-item {
+  background: linear-gradient(90deg, rgba(0, 255, 176, 0.3) 0%, rgba(0, 198, 255, 0.3) 100%);
+  color: #005580;
+  border-radius: 7px;
+  padding: 4px 13px;
+  font-weight: 700;
+  font-size: 1em;
+  box-shadow: 0 0 8px rgba(0, 255, 153, 0.38);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.popup-grup-item:hover {
+  background: linear-gradient(90deg, rgba(0, 198, 255, 0.3) 0%, rgba(0, 255, 176, 0.3) 100%);
+  color: #006699;
+}
+.popup-tablo {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 0.98em;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  overflow: hidden;
+  color: #333;
+}
+.popup-tablo th, .popup-tablo td {
+  border: 1px solid rgba(0, 198, 255, 0.34);
+  padding: 5px 8px;
+  text-align: center;
+}
+.popup-tablo th {
+  background: linear-gradient(90deg, rgba(0, 198, 255, 0.3) 0%, rgba(0, 255, 176, 0.3) 100%);
+  color: #005580;
+  font-weight: 700;
+}
+.popup-tablo td:first-child {
+  font-size: 0.8em;
+}
+.popup-date {
+  position: absolute;
+  top: 12px;
+  right: 50px;
+  font-size: 0.88em;
+  color: #777;
+}
+.popup-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.pdf-download-btn {
+  display: block;
+  background: linear-gradient(90deg, rgba(0, 198, 255, 0.7) 0%, rgba(0, 255, 176, 0.7) 100%);
+  color: #004466;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-size: 1.08em;
+  font-weight: 700;
+  box-shadow: 0 0 8px rgba(0, 255, 176, 0.38);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pdf-download-btn:hover {
+  background: linear-gradient(90deg, rgba(0, 255, 176, 0.7) 0%, rgba(0, 198, 255, 0.7) 100%);
+  color: #003344;
+}
+
+.pdf-auto-text {
+  display: none;
+  text-align: center;
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 14px;
+  font-style: italic;
+}
+
+@media print {
+  .pdf-download-btn {
+    display: none;
+  }
+}
+
+.popup-tablo, .a4-table {
+  width: 100%;
+  max-width: 100%;
+  font-size: 11pt;
+  border: 1px solid rgba(0, 198, 255, 0.34);
+  margin-bottom: 4mm;
+  background: white;
+}
+
+.popup-tablo th, .popup-tablo td {
+  border: 1px solid rgba(0, 198, 255, 0.34);
+  background: white;
+  color: #333;
+}
+
+.popup-tablo th {
+  background: linear-gradient(90deg, rgba(0, 198, 255, 0.3) 0%, rgba(0, 255, 176, 0.3) 100%);
+  color: #005580;
+  font-weight: 700;
+}
+
+@media print {
+  html, body, div, section, article, header, footer, table, tr, td, th {
+    background: white !important;
+    color: black !important;
+    border-color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  html, body {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  .popup-rapor {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: 190mm !important;
+    min-width: 190mm !important;
+    max-width: 190mm !important;
+    margin: 10mm !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: block !important;
+    height: 270mm !important;
+  }
+  
+  .popup-header {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    border-bottom: 2px solid black !important;
+    margin-bottom: 15mm !important;
+    text-align: left !important;
+    padding: 10mm 0 !important;
+  }
+  
+  .popup-logo {
+    width: auto !important;
+    height: 40mm !important;
+    margin-right: 15mm !important;
+    background: white !important;
+  }
+  
+  .popup-title {
+    color: black !important;
+    text-shadow: none !important;
+    font-size: 24pt !important;
+  }
+  
+  .popup-tablo, .a4-table {
+    background: white !important;
+    color: black !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 11pt !important;
+    border: 1px solid black !important;
+    margin-bottom: 4mm !important;
+  }
+  
+  .popup-tablo th, .popup-tablo td {
+    border: 1px solid black !important;
+    background: white !important;
+    color: black !important;
+  }
+  
+  .popup-close, .pdf-download-btn {
+    display: none !important;
+  }
+  
+  .pdf-auto-text {
+    display: block !important;
+    color: black !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    margin-top: 8mm !important;
+    font-style: italic !important;
+  }
+  
+  .progress-bar, .progress-fill {
+    display: none !important;
+  }
+  
+  .popup-grup-item {
+    border: 1px solid black !important;
+    color: black !important;
+    background: white !important;
+    margin: 2px !important;
+  }
+}
+@media (max-width: 600px) {
+  .popup-rapor { min-width: 0; max-width: 98vw; padding: 10px 2vw; }
+  .popup-header { flex-direction: column; gap: 2px; }
+  .popup-title { font-size: 1.05rem; }
+}
+@media (max-width: 700px) {
+  .container { max-width: 98vw; padding: 16px 2vw; }
+  .stats-container { flex-direction: column; gap: 8px; }
+  .stat-box { min-width: 0; }
+  .modal-content { max-width: 680px; width: 92vw; }
+}

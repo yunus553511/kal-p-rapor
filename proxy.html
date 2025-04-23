@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Google Sheets Proxy</title>
+</head>
+<body>
+<script>
+// SheetJS proxy: Google Sheets'i iframe üzerinden okuma
+window.addEventListener('message', function(e) {
+  if (!e.data || !e.data.action) return;
+  if (e.data.action === 'loadSheet') {
+    var url = e.data.url;
+    fetch(url)
+      .then(resp => resp.arrayBuffer())
+      .then(data => {
+        parent.postMessage({ source: 'proxy', action: 'sheetLoaded', buffer: data, gid: e.data.gid }, '*');
+      })
+      .catch(err => {
+        parent.postMessage({ source: 'proxy', action: 'error', error: err.message }, '*');
+      });
+  }
+});
+// Hazır olduğunu bildir
+parent.postMessage({ source: 'proxy', action: 'ready' }, '*');
+</script>
+</body>
+</html>

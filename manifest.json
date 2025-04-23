@@ -1,0 +1,11 @@
+{
+  "name": "BEYMETAL KALIP RP",
+  "short_name": "Kalıp RP",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0073e6",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}
