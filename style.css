@@ -136,12 +136,13 @@ body {
 .modal-content {
   background: rgba(255, 255, 255, 0.97); 
   border-radius: 18px; 
-  padding: 28px 14px; 
+  padding: 28px 10px; 
   max-width: 800px; 
   width: 95vw;
   margin: 0 auto; 
   box-shadow: 0 0 32px rgba(0, 198, 255, 0.34); 
   position: relative;
+  box-sizing: border-box;
 }
 .close-button {
   position: absolute; right: 18px; top: 12px; font-size: 2rem; color: #00c6ff; background: none; border: none; cursor: pointer;}
@@ -239,11 +240,13 @@ body {
   box-shadow: 0 0 32px rgba(0, 198, 255, 0.47), 0 2px 24px rgba(0, 255, 176, 0.34);
   padding: 25px 24px 30px 24px;
   color: #000;
-  min-width: 580px;
+  width: 90%;
+  min-width: 280px;
   max-width: 800px;
   margin: 0 auto;
   font-family: 'Poppins', sans-serif;
   position: relative;
+  box-sizing: border-box;
 }
 .popup-header {
   display: flex;
@@ -484,9 +487,94 @@ body {
   }
 }
 @media (max-width: 600px) {
-  .popup-rapor { min-width: 0; max-width: 98vw; padding: 10px 2vw; }
-  .popup-header { flex-direction: column; gap: 2px; }
-  .popup-title { font-size: 1.05rem; }
+  .popup-rapor { 
+    padding: 15px 12px 20px 12px;
+    min-width: 0;
+    width: 95%;
+  }
+  
+  .popup-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+  
+  .popup-logo {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+  }
+  
+  .popup-title {
+    font-size: 1.3rem;
+    margin: 0 auto;
+  }
+  
+  .popup-date {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin: 5px auto;
+    font-size: 0.8em;
+  }
+  
+  .popup-close {
+    right: 10px;
+    top: 10px;
+    font-size: 1.8rem;
+  }
+  
+  .popup-tablo, .a4-table {
+    font-size: 0.8em;
+  }
+  
+  .popup-tablo th {
+    padding: 4px 2px;
+  }
+  
+  .popup-tablo td {
+    padding: 4px 2px;
+  }
+  
+  .popup-tablo td:first-child {
+    font-size: 0.75em;
+  }
+  
+  .popup-grup-item {
+    font-size: 0.9em;
+    padding: 3px 8px;
+    margin: 3px 2px;
+  }
+  
+  .popup-kod, .popup-toplam-adet, .popup-grup, .popup-son-tarih, .popup-figur-tonaj, .popup-yuzdelik-grafik, .popup-tenefer {
+    font-size: 0.95em;
+  }
+  
+  .pdf-download-btn {
+    font-size: 0.95em;
+    padding: 6px 15px;
+  }
+}
+
+/* Daha ku00fcu00e7u00fck telefonlar iu00e7in ek optimizasyonlar */
+@media (max-width: 400px) {
+  .popup-rapor {
+    padding: 10px 8px 15px 8px;
+  }
+  
+  .popup-tablo, .a4-table {
+    font-size: 0.75em;
+  }
+  
+  .popup-tablo td:first-child {
+    font-size: 0.7em;
+  }
+  
+  .popup-title {
+    font-size: 1.1rem;
+  }
 }
 @media (max-width: 700px) {
   .container { max-width: 98vw; padding: 16px 2vw; }
