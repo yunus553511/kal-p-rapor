@@ -178,14 +178,13 @@ function formatDateForPopup(excelDate) {
         return excelDate;
     }
     const gun = String(dateObj.getDate()).padStart(2, '0');
-    const ay = String(dateObj.getMonth() + 1).padStart(2, '0'); // Ay 0-11 aralığında
+    const ay = String(dateObj.getMonth() + 1).padStart(2, '0');
     const yil = dateObj.getFullYear();
     return `${gun}.${ay}.${yil}`;
 }
 
 function fetchSayfa4Son4Tarih(kod, callback) {
     // Sayfa4 gid: 278605159
-    console.log('Sayfa4 verilerini çekmeye çalışıyorum, kod:', kod);
     requestSheetFromProxy(
         'https://docs.google.com/spreadsheets/d/1RP5kRFKAUUJye7-lPnlmeNaN805eF_88/export?format=xlsx&id=1RP5kRFKAUUJye7-lPnlmeNaN805eF_88&gid=278605159',
         '278605159',
@@ -209,11 +208,7 @@ function fetchSayfa4Son4Tarih(kod, callback) {
             }
             
             console.log(`Aranıyor - Normal kod: "${normalizedKod}", AP versiyonu: "${apVersion ? apVersion : 'Yok'}"`);
-            console.log('Sayfa4 sütun referansları: A=0, B=1, D=3, E=4, M=12, P=15, Q=16, R=17, S=18');
-            console.log('Toplam satır sayısı:', range.e.r - range.s.r + 1);
             
-            // Tüm satırları tara ve eşleşenleri bul
-            let matchCount = 0;
             for (let row = range.s.r + 1; row <= range.e.r; row++) {
                 const kodCell = sheet[XLSX.utils.encode_cell({c:1, r:row})];
                 
@@ -224,47 +219,21 @@ function fetchSayfa4Son4Tarih(kod, callback) {
                 
                 // Hem normal kod, hem AP versiyonu ile kontrol et
                 if (cellValue === normalizedKod || (apVersion && cellValue === apVersion)) {
-                    matchCount++;
-                    console.log(`Eşleşme bulundu! Satır: ${row}, Kod: ${kodCell.v}`);
-                    
-                    // Tarih değerini kontrol et
-                    const tarihCell = sheet[XLSX.utils.encode_cell({c:0, r:row})];
-                    console.log(`Tarih hücresi:`, tarihCell ? tarihCell.v : 'Boş');
-                    
                     rows.push({
-                        tarih: sheet[XLSX.utils.encode_cell({c:0, r:row})]?.v || '', // A sütunu - TARİH
-                        siparis_boyu: sheet[XLSX.utils.encode_cell({c:3, r:row})]?.v || '', // D sütunu - SİPARİŞ BOYU
-                        uretilen_adet: sheet[XLSX.utils.encode_cell({c:4, r:row})]?.v || '', // E sütunu - ÜRETİLEN ADET
-                        uretilen_kg: sheet[XLSX.utils.encode_cell({c:15, r:row})]?.v || '', // P sütunu - ÜRETİLEN KG
-                        pres: sheet[XLSX.utils.encode_cell({c:12, r:row})]?.v || '', // M sütunu - PRES
-                        firma: sheet[XLSX.utils.encode_cell({c:16, r:row})]?.v || '', // Q sütunu - FİRMA
-                        sorun: sheet[XLSX.utils.encode_cell({c:17, r:row})]?.v || '', // R sütunu - SORUN
-                        tashihat: sheet[XLSX.utils.encode_cell({c:18, r:row})]?.v || '' // S sütunu - TASHİHAT
+                        tarih: sheet[XLSX.utils.encode_cell({c:0, r:row})]?.v || '',
+                        siparis_boyu: sheet[XLSX.utils.encode_cell({c:2, r:row})]?.v || '',
+                        uretilen_adet: sheet[XLSX.utils.encode_cell({c:4, r:row})]?.v || '',
+                        uretilen_kg: sheet[XLSX.utils.encode_cell({c:15, r:row})]?.v || '',
+                        pres: sheet[XLSX.utils.encode_cell({c:12, r:row})]?.v || '', // M sütunu
+                        firma: sheet[XLSX.utils.encode_cell({c:16, r:row})]?.v || '', // Q sütunu
+                        sorun: sheet[XLSX.utils.encode_cell({c:17, r:row})]?.v || '',
+                        tashihat: sheet[XLSX.utils.encode_cell({c:18, r:row})]?.v || ''
                     });
                 }
             }
             
-            console.log(`Toplam ${matchCount} eşleşme bulundu.`);
-            
-            if (rows.length === 0) {
-                console.log('Hiç eşleşme bulunamadı! Kod kontrolü yapılıyor...');
-                // Tüm kodları kontrol et
-                for (let row = range.s.r + 1; row <= Math.min(range.s.r + 20, range.e.r); row++) {
-                    const kodCell = sheet[XLSX.utils.encode_cell({c:1, r:row})];
-                    if (kodCell && kodCell.v) {
-                        console.log(`Satır ${row}: Kod = ${kodCell.v}`);
-                    }
-                }
-            }
-            
             // Tarihe göre sırala (en yeni başa)
-            rows.sort((a, b) => {
-                // Tarih formatını kontrol et
-                console.log('Tarih karşılaştırma:', a.tarih, b.tarih);
-                return new Date(b.tarih) - new Date(a.tarih);
-            });
-            
-            console.log('Son 4 üretim verisi:', rows.slice(0, 4));
+            rows.sort((a, b) => new Date(b.tarih) - new Date(a.tarih));
             callback(rows.slice(0, 4));
         }
     );
@@ -283,6 +252,10 @@ function fetchSayfa1Tonaj(kod, callback) {
             console.log(`Aranıyor: Kod="${kod}"`);
             
             for (let row = range.s.r + 1; row <= range.e.r; row++) {
+                // B sütunu = 1 (kodu arama)
+                // J sütunu = 9 (kesin tonaj)
+                // K sütunu = 10 (tahmini tonaj)
+                // L sütunu = 11 (tahmini tenefer)
                 const b_cell = sheet[XLSX.utils.encode_cell({c:1, r:row})];
                 
                 if (!b_cell) continue; // Boş hücreleri atla
@@ -467,13 +440,7 @@ function showPopup(row, detaySatirlar, kod) {
                     tonajTip = 'Tahmini';
                 }
                 let tonajInt = parseInt(tonaj);
-                let row = `<tr>
-                    <td style="padding: 8px; text-align: center;">${r.figur || ''}</td>
-                    <td style="padding: 8px; text-align: center;">${r.firma || ''}</td>
-                    <td style="padding: 8px; text-align: center;">${tonajInt ? tonajInt + ' ' + tonajTip + ' KG' : ''}</td>
-                    <td style="padding: 8px; text-align: center;">${r.tahmini_tenefer || ''}</td>
-                </tr>`;
-                content.querySelector('.popup-figur-tonaj').innerHTML += row;
+                content.querySelector('.popup-figur-tonaj').innerHTML += `<tr><td>${r.figur || ''}</td><td>${r.firma || ''}</td><td>${tonajInt ? tonajInt + ' ' + tonajTip : ''}</td><td>${r.tahmini_tenefer || ''}</td></tr>`;
             });
             content.querySelector('.popup-figur-tonaj').innerHTML += '</table>';
             if (yuzdelikBar) {
@@ -487,26 +454,9 @@ function showPopup(row, detaySatirlar, kod) {
     fetchSayfa4Son4Tarih(kod, function(sonlar) {
         let tablo = '';
         if (sonlar && sonlar.length) {
-            tablo += `<b>Son 4 üretim:</b><table class='popup-tablo son4-table'><tr><th>Tarih</th><th>Sipariş Boyu</th><th>Üretilen Adet</th><th>Üretilen KG</th><th>PRES</th><th>FİRMA</th><th>Sorun</th><th>Tashihat</th></tr>`;
+            tablo += `<b>Son 4 üretim:</b><table class='popup-tablo a4-table'><tr><th>Tarih</th><th>Sipariş Boyu</th><th>Üretilen Adet</th><th>Üretilen KG</th><th>PRES</th><th>FİRMA</th><th>Sorun</th><th>Tashihat</th></tr>`;
             sonlar.forEach(s => {
-                // Virgül sonrası kısmını kaldır ve sonuna KG ekle
-                let uretilen_kg_formatted = '';
-                if (s.uretilen_kg && s.uretilen_kg !== '') {
-                    let kgValue = parseFloat(s.uretilen_kg);
-                    uretilen_kg_formatted = Math.floor(kgValue) + ' KG';
-                }
-                
-                // Tarih, Sorun ve Tashihat için daha küçük font boyutu kullan
-                tablo += `<tr>
-                    <td><span style="font-size: smaller;">${formatDateForPopup(s.tarih)}</span></td>
-                    <td>${s.siparis_boyu}</td>
-                    <td>${s.uretilen_adet}</td>
-                    <td>${uretilen_kg_formatted}</td>
-                    <td>${s.pres || ''}</td>
-                    <td>${s.firma || ''}</td>
-                    <td><span style="font-size: smaller;">${s.sorun}</span></td>
-                    <td><span style="font-size: smaller;">${s.tashihat}</span></td>
-                </tr>`;
+                tablo += `<tr><td>${formatDateForPopup(s.tarih)}</td><td>${s.siparis_boyu}</td><td>${s.uretilen_adet}</td><td>${s.uretilen_kg}</td><td>${s.pres || ''}</td><td>${s.firma || ''}</td><td>${s.sorun}</td><td>${s.tashihat}</td></tr>`;
             });
             tablo += '</table>';
         } else {
@@ -530,6 +480,7 @@ function showPopup(row, detaySatirlar, kod) {
             pdfContent.style.boxSizing = 'border-box';
             pdfContent.style.background = '#fff';
             pdfContent.style.color = '#000';
+            pdfContent.style.fontFamily = 'Arial, sans-serif';
             
             // Başlık kısmı
             let header = document.createElement('div');
@@ -538,12 +489,14 @@ function showPopup(row, detaySatirlar, kod) {
             header.style.alignItems = 'center';
             header.style.marginBottom = '20px';
             header.style.width = '100%';
+            header.style.textAlign = 'center';
             
             // Logo
             let logo = document.createElement('img');
             logo.src = 'logo.png'; // Proje klasöründeki logo.png dosyası
             logo.style.width = '80px'; // 50px'den 80px'e büyütüyorum
             logo.style.height = 'auto';
+            logo.style.marginRight = '10px';
             
             // Başlık
             let title = document.createElement('h1');
@@ -654,12 +607,12 @@ function showPopup(row, detaySatirlar, kod) {
             
             // Son 4 üretim tablosunu kopyala - null kontrolü ile
             let son4UretimTable = null;
-            const son4UretimElement = document.querySelector('.popup-rapor .son4-table');
+            const son4UretimElement = document.querySelector('.popup-rapor .popup-son-tarih table');
             if (son4UretimElement) {
                 son4UretimTable = son4UretimElement.cloneNode(true);
                 son4UretimTable.style.width = '100%';
                 son4UretimTable.style.borderCollapse = 'collapse';
-                son4UretimTable.style.marginBottom = '10px';
+                son4UretimTable.style.marginBottom = '20px';
                 son4UretimTable.style.fontSize = '14px';
                 
                 // Tablo hücrelerinin düzenini değiştir
@@ -688,165 +641,128 @@ function showPopup(row, detaySatirlar, kod) {
             figurTitle.style.marginBottom = '10px';
             figurTitle.style.fontSize = '16px';
             
-            // Figür tablosunu oluştur
-            let figurTable = document.createElement('table');
-            figurTable.style.width = '100%';
-            figurTable.style.borderCollapse = 'collapse';
-            figurTable.style.marginBottom = '10px';
-            figurTable.style.fontSize = '14px';
-            
-            // Başlık satırı ekle
-            const headerRow = document.createElement('tr');
-            const headers = ['Figür', 'Firma', 'Tonaj', 'Tahmini Tenefer'];
-            
-            headers.forEach(headerText => {
-                const th = document.createElement('th');
-                th.textContent = headerText;
-                th.style.padding = '8px';
-                th.style.border = '1px solid #ddd';
-                th.style.textAlign = 'center';
-                th.style.backgroundColor = '#e6f7ff';
-                th.style.color = '#0066cc';
-                th.style.fontWeight = 'bold';
-                headerRow.appendChild(th);
-            });
-            
-            figurTable.appendChild(headerRow);
-            
-            // Figür bilgilerini API'den çek
-            fetchSayfa1FigurRows(kod, function(figurSatirlari) {
-                if (figurSatirlari && figurSatirlari.length > 0) {
-                    figurSatirlari.forEach(r => {
-                        const row = document.createElement('tr');
-                        
-                        const figur = document.createElement('td');
-                        figur.textContent = r.figur || '';
-                        figur.style.padding = '8px';
-                        figur.style.border = '1px solid #ddd';
-                        figur.style.textAlign = 'center';
-                        row.appendChild(figur);
-                        
-                        const firma = document.createElement('td');
-                        firma.textContent = r.firma || '';
-                        firma.style.padding = '8px';
-                        firma.style.border = '1px solid #ddd';
-                        firma.style.textAlign = 'center';
-                        row.appendChild(firma);
-                        
-                        const tonaj = document.createElement('td');
-                        let tonajText = '';
-                        if (r.kesin_tonaj && r.kesin_tonaj !== '' && r.kesin_tonaj !== 0) {
-                            // Virgül sonrası kısmını kaldır ve sonuna KG ekle
-                            let tonajValue = parseFloat(r.kesin_tonaj);
-                            tonajText = Math.floor(tonajValue) + ' Kesin KG';
-                        } else if (r.tahmini_tonaj && r.tahmini_tonaj !== '' && r.tahmini_tonaj !== 0) {
-                            // Virgül sonrası kısmını kaldır ve sonuna KG ekle
-                            let tonajValue = parseFloat(r.tahmini_tonaj);
-                            tonajText = Math.floor(tonajValue) + ' Tahmini KG';
-                        }
-                        tonaj.textContent = tonajText;
-                        tonaj.style.padding = '8px';
-                        tonaj.style.border = '1px solid #ddd';
-                        tonaj.style.textAlign = 'center';
-                        row.appendChild(tonaj);
-                        
-                        const tenefer = document.createElement('td');
-                        tenefer.textContent = r.tahmini_tenefer || '';
-                        tenefer.style.padding = '8px';
-                        tenefer.style.border = '1px solid #ddd';
-                        tenefer.style.textAlign = 'center';
-                        row.appendChild(tenefer);
-                        
-                        figurTable.appendChild(row);
-                    });
-                    
-                    // Yüzdelik bar
-                    let percentageBar = document.createElement('div');
-                    percentageBar.style.width = '100%';
-                    percentageBar.style.height = '20px';
-                    percentageBar.style.backgroundColor = '#eaf9fc';
-                    percentageBar.style.borderRadius = '10px';
-                    percentageBar.style.overflow = 'hidden';
-                    percentageBar.style.marginBottom = '20px';
-                    
-                    let percentageFill = document.createElement('div');
-                    let yuzde = '0%';
-                    let yuzdeElement = document.querySelector('.popup-rapor .figur-progress-fill');
-                    if (yuzdeElement) {
-                        yuzde = yuzdeElement.textContent || '0%';
-                    }
-                    
-                    let yuzdeValue = parseInt(yuzde);
-                    let barColor = yuzdeValue >= 95 ? '#ff4d4d' : yuzdeValue >= 80 ? '#ffe400' : '#00ff88';
-                    
-                    percentageFill.style.width = yuzde;
-                    percentageFill.style.height = '100%';
-                    percentageFill.style.backgroundColor = barColor;
-                    percentageFill.style.textAlign = 'center';
-                    percentageFill.style.color = '#222';
-                    percentageFill.style.lineHeight = '20px';
-                    percentageFill.style.fontWeight = 'bold';
-                    percentageFill.textContent = yuzde;
-                    
-                    percentageBar.appendChild(percentageFill);
-                    
-                    // PDF içeriğini birleştir
-                    pdfContent.appendChild(header);
-                    pdfContent.appendChild(profileInfo);
-                    pdfContent.appendChild(lastProductionTitle);
-                    pdfContent.appendChild(son4UretimTable);
-                    pdfContent.appendChild(figurTitle);
-                    pdfContent.appendChild(figurTable);
-                    pdfContent.appendChild(percentageBar);
-                    
-                    // PDF oluştur
-                    const opt = {
-                        margin: [10, 10, 10, 10],
-                        filename: 'beymetal_kalip_rapor.pdf',
-                        image: { type: 'jpeg', quality: 1 },
-                        html2canvas: { scale: 2, backgroundColor: '#fff' },
-                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                    };
-                    
-                    html2pdf().set(opt).from(pdfContent).save();
-                } else {
-                    // Figür bilgisi yoksa
-                    const row = document.createElement('tr');
-                    const cell = document.createElement('td');
-                    cell.colSpan = 4;
-                    cell.textContent = 'Figür/Firma/Tonaj/Tenefer verisi bulunamadı.';
+            // Figür tablosunu kopyala - null kontrolü ile
+            let figurTable = null;
+            const figurElement = document.querySelector('.popup-rapor .figur-table');
+            if (figurElement) {
+                figurTable = figurElement.cloneNode(true);
+                figurTable.style.width = '100%';
+                figurTable.style.borderCollapse = 'collapse';
+                figurTable.style.marginBottom = '10px';
+                figurTable.style.fontSize = '14px';
+                
+                // Tablo hücrelerinin düzenini değiştir
+                const cells = figurTable.querySelectorAll('td, th');
+                cells.forEach(cell => {
                     cell.style.padding = '8px';
                     cell.style.border = '1px solid #ddd';
                     cell.style.textAlign = 'center';
-                    row.appendChild(cell);
-                    figurTable.appendChild(row);
-                    
-                    // PDF içeriğini birleştir
-                    pdfContent.appendChild(header);
-                    pdfContent.appendChild(profileInfo);
-                    pdfContent.appendChild(lastProductionTitle);
-                    pdfContent.appendChild(son4UretimTable);
-                    pdfContent.appendChild(figurTitle);
-                    pdfContent.appendChild(figurTable);
-                    
-                    // PDF oluştur
-                    const opt = {
-                        margin: [10, 10, 10, 10],
-                        filename: 'beymetal_kalip_rapor.pdf',
-                        image: { type: 'jpeg', quality: 1 },
-                        html2canvas: { scale: 2, backgroundColor: '#fff' },
-                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                    };
-                    
-                    html2pdf().set(opt).from(pdfContent).save();
+                });
+                
+                // Başlık hücrelerinin arka plan rengi
+                const headers = figurTable.querySelectorAll('th');
+                headers.forEach(header => {
+                    header.style.backgroundColor = '#e6f7ff';
+                    header.style.color = '#0066cc';
+                    header.style.fontWeight = 'bold';
+                });
+                
+                // Eger tablo bosssa, verileri manuel olarak ekle
+                if (figurTable.querySelectorAll('tr').length <= 1) {
+                    // Figür satırlarını al
+                    fetchSayfa1FigurRows(kod, function(figurSatirlari) {
+                        if (figurSatirlari && figurSatirlari.length > 0) {
+                            figurSatirlari.forEach(r => {
+                                const row = document.createElement('tr');
+                                
+                                const figur = document.createElement('td');
+                                figur.textContent = r.figur || '';
+                                row.appendChild(figur);
+                                
+                                const firma = document.createElement('td');
+                                firma.textContent = r.firma || '';
+                                row.appendChild(firma);
+                                
+                                const tonaj = document.createElement('td');
+                                let tonajText = '';
+                                if (r.kesin_tonaj && r.kesin_tonaj !== '' && r.kesin_tonaj !== 0) {
+                                    tonajText = r.kesin_tonaj + ' Kesin';
+                                } else if (r.tahmini_tonaj && r.tahmini_tonaj !== '' && r.tahmini_tonaj !== 0) {
+                                    tonajText = r.tahmini_tonaj + ' Tahmini';
+                                }
+                                tonaj.textContent = tonajText;
+                                row.appendChild(tonaj);
+                                
+                                const tenefer = document.createElement('td');
+                                tenefer.textContent = r.tahmini_tenefer || '';
+                                row.appendChild(tenefer);
+                                
+                                figurTable.appendChild(row);
+                            });
+                        }
+                    });
                 }
-            });
+            } else {
+                figurTable = document.createElement('div');
+                figurTable.textContent = 'Figür/Firma/Tonaj/Tenefer verisi bulunamadı.';
+            }
+            
+            // Yüzdelik bar
+            let percentageBar = document.createElement('div');
+            percentageBar.style.width = '100%';
+            percentageBar.style.height = '20px';
+            percentageBar.style.backgroundColor = '#eaf9fc';
+            percentageBar.style.borderRadius = '10px';
+            percentageBar.style.overflow = 'hidden';
+            percentageBar.style.marginBottom = '20px';
+            
+            let percentageFill = document.createElement('div');
+            let yuzde = '0%';
+            let yuzdeElement = document.querySelector('.popup-rapor .figur-progress-fill');
+            if (yuzdeElement) {
+                yuzde = yuzdeElement.textContent || '0%';
+            }
+            
+            let yuzdeValue = parseInt(yuzde);
+            let barColor = yuzdeValue >= 95 ? '#ff4d4d' : yuzdeValue >= 80 ? '#ffe400' : '#00ff88';
+            
+            percentageFill.style.width = yuzde;
+            percentageFill.style.height = '100%';
+            percentageFill.style.backgroundColor = barColor;
+            percentageFill.style.textAlign = 'center';
+            percentageFill.style.color = '#222';
+            percentageFill.style.lineHeight = '20px';
+            percentageFill.style.fontWeight = 'bold';
+            percentageFill.textContent = yuzde;
+            
+            percentageBar.appendChild(percentageFill);
+            
+            // PDF içeriğini birleştir
+            pdfContent.appendChild(header);
+            pdfContent.appendChild(profileInfo);
+            pdfContent.appendChild(lastProductionTitle);
+            pdfContent.appendChild(son4UretimTable);
+            pdfContent.appendChild(figurTitle);
+            pdfContent.appendChild(figurTable);
+            pdfContent.appendChild(percentageBar);
+            
+            // PDF oluştur
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'beymetal_kalip_rapor.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, backgroundColor: '#fff' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(pdfContent).save();
         } catch (error) {
             console.error('PDF oluşturma hatası:', error);
             alert('PDF oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
         }
-    };
+    });
 }
+
 function showResults(results) {
     const container = document.getElementById('results');
     if (!results.length) {
